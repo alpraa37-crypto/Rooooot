@@ -1,0 +1,3478 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مقيم — قاعدة بيانات الهواتف الذكية العالمية</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root{
+      --bg: #0a0f1a;
+      --bg-light: #f5f7fa;
+      --card: #0d1422;
+      --card-light: #ffffff;
+      --card-hover: #121b2e;
+      --text: #e6eef6;
+      --text-light: #1e293b;
+      --muted: #8b9bb5;
+      --muted-light: #64748b;
+      --accent: #3ddc84;
+      --accent-secondary: #6c63ff;
+      --glass: rgba(255,255,255,0.05);
+      --radius: 16px;
+      --radius-sm: 10px;
+      font-family: "Segoe UI", "Cairo", Tahoma, Arial, sans-serif;
+    }
+    
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      background: linear-gradient(135deg,#070b16 0%, #0e1a30 60%, #162544 100%);
+      color:var(--text);
+      padding:24px;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    body.light-mode{
+      background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 60%, #f1f8e9 100%);
+      color: var(--text-light);
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:28px;
+      flex-wrap: wrap;
+    }
+    .brand{
+      display:flex;
+      gap:16px;
+      align-items:center;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#1f7bd6,#8a2be2);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:white;
+      box-shadow:0 8px 24px rgba(13, 20, 30, 0.7);
+      font-size:24px;
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:'';
+      position:absolute;
+      top:-50%;
+      left:-50%;
+      width:200%;
+      height:200%;
+      background:linear-gradient(to bottom right, rgba(255,255,255,0.1), transparent);
+      transform:rotate(30deg);
+    }
+    h1{margin:0;font-size:24px;background:linear-gradient(90deg, #3ddc84, #6c63ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    body.light-mode h1{background:linear-gradient(90deg, #2e7d32, #6a1b9a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    p.lead{margin:6px 0 0;color:var(--muted);font-size:14px}
+    body.light-mode p.lead{color:var(--muted-light);}
+
+    .controls{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap: wrap;
+    }
+    input.search{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:12px 16px;border-radius:12px;color:inherit;
+      min-width:260px;
+      font-size:14px;
+      transition:all 0.3s ease;
+    }
+    body.light-mode input.search{
+      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(0,0,0,0.1);
+      color:var(--text-light);
+    }
+    input.search:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(61, 220, 132, 0.1);
+    }
+    select, button.filter-btn{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,0.08);
+      padding:12px 16px;border-radius:12px;color:inherit;
+      font-size:14px;
+      cursor:pointer;
+      transition:all 0.3s ease;
+    }
+    body.light-mode select, body.light-mode button.filter-btn{
+      background:var(--card-light);
+      border:1px solid rgba(0,0,0,0.1);
+      color:var(--text-light);
+    }
+    select:hover, button.filter-btn:hover{
+      background:var(--card-hover);
+      border-color:rgba(255,255,255,0.12);
+    }
+    body.light-mode select:hover, body.light-mode button.filter-btn:hover{
+      background:#f0f0f0;
+    }
+    .stats{
+      display:flex;
+      gap:12px;
+      margin:20px 0;
+      padding:16px;
+      background:var(--glass);
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+    body.light-mode .stats{
+      background:rgba(255,255,255,0.7);
+      border:1px solid rgba(0,0,0,0.05);
+    }
+    .stat{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:12px 20px;
+      background:rgba(255,255,255,0.02);
+      border-radius:12px;
+      flex:1;
+      min-width:120px;
+    }
+    body.light-mode .stat{
+      background:rgba(0,0,0,0.02);
+    }
+    .stat-value{
+      font-size:24px;
+      font-weight:700;
+      color:var(--accent);
+    }
+    .stat-label{
+      font-size:13px;
+      color:var(--muted);
+      margin-top:4px;
+    }
+    body.light-mode .stat-label{color:var(--muted-light);}
+
+    main{
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:24px;
+      margin-top:18px;
+    }
+
+    /* card list */
+    .list{
+      display:grid;
+      grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+      gap:20px;
+    }
+    .phone-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      border:1px solid rgba(255,255,255,0.05);
+      position:relative;
+      overflow:hidden;
+    }
+    body.light-mode .phone-card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      border:1px solid rgba(0,0,0,0.08);
+      box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    }
+    .phone-card:before{
+      content:'';
+      position:absolute;
+      top:0;
+      right:0;
+      width:100%;
+      height:4px;
+      background:linear-gradient(90deg, var(--accent-secondary), var(--accent));
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+    .phone-card:hover{ 
+      transform:translateY(-8px); 
+      box-shadow:0 16px 40px rgba(2,6,23,0.8); 
+      background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border-color:rgba(255,255,255,0.1);
+    }
+    body.light-mode .phone-card:hover{ 
+      box-shadow:0 16px 40px rgba(0,0,0,0.15); 
+      background:linear-gradient(180deg, rgba(255,255,255,1), rgba(255,255,255,0.9));
+      border-color:var(--accent);
+    }
+    .phone-card:hover:before{
+      opacity:1;
+    }
+    .card-header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      margin-bottom:16px;
+    }
+    .thumb{
+      width:100px;height:100px;border-radius:14px;background:#071426;
+      display:flex;align-items:center;justify-content:center;font-weight:700;
+      font-size:13px;color:var(--muted);flex-shrink:0;
+      border:1px solid rgba(255,255,255,0.05);
+      overflow:hidden;
+      position:relative;
+    }
+    body.light-mode .thumb{
+      background:#e8f5e9;
+      border:1px solid rgba(0,0,0,0.05);
+      color:var(--muted-light);
+    }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    .card-info{
+      flex:1;
+    }
+    .card-info h3{
+      margin:0;font-size:18px;font-weight:600;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    body.light-mode .card-info h3{color:var(--text-light);}
+    .brand-badge{
+      background:rgba(108, 99, 255, 0.2);
+      color:#8a85ff;
+      padding:4px 8px;
+      border-radius:6px;
+      font-size:12px;
+      font-weight:600;
+    }
+    body.light-mode .brand-badge{
+      background:rgba(106, 27, 154, 0.1);
+      color:#6a1b9a;
+    }
+    .card-info p{
+      margin:8px 0 0;color:var(--muted);font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    body.light-mode .card-info p{color:var(--muted-light);}
+    .card-features{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:12px;
+    }
+    .feature-tag{
+      background:rgba(255,255,255,0.03);
+      padding:6px 10px;
+      border-radius:20px;
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    body.light-mode .feature-tag{
+      background:rgba(0,0,0,0.03);
+      color:var(--muted-light);
+    }
+    .feature-tag i{
+      color:var(--accent);
+      font-size:10px;
+    }
+    .card-footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top:16px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,0.03);
+    }
+    body.light-mode .card-footer{
+      border-top:1px solid rgba(0,0,0,0.05);
+    }
+    .price{
+      font-weight:700;
+      font-size:18px;
+      color:var(--accent);
+    }
+    body.light-mode .price{color:#2e7d32;}
+    .rating{
+      display:flex;
+      align-items:center;
+      gap:4px;
+    }
+    .rating i{
+      color:#ffc107;
+      font-size:14px;
+    }
+    .rating-value{
+      font-size:14px;
+      color:var(--muted);
+      margin-right:4px;
+    }
+    body.light-mode .rating-value{color:var(--muted-light);}
+    
+    .compare-badge{
+      position:absolute;
+      top:10px;
+      left:10px;
+      background:var(--accent);
+      color:white;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:14px;
+      font-weight:bold;
+      z-index:2;
+      opacity:0;
+      transition:opacity 0.3s;
+    }
+    .phone-card.compared .compare-badge{
+      opacity:1;
+    }
+
+    /* side details */
+    .details{
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      padding:20px;border-radius:var(--radius);border:1px solid rgba(255,255,255,0.05);
+      min-height:240px;
+      position:sticky;
+      top:24px;
+      max-height:calc(100vh - 100px);
+      overflow-y:auto;
+    }
+    body.light-mode .details{
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .details h2{
+      margin:0 0 12px;font-size:20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+    }
+    body.light-mode .details h2{color:var(--text-light);}
+    .details-header{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      margin-bottom:20px;
+    }
+    .details-thumb{
+      width:100%;height:180px;border-radius:14px;background:#071426;
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid rgba(255,255,255,0.05);
+      overflow:hidden;
+    }
+    body.light-mode .details-thumb{
+      background:#e8f5e9;
+      border:1px solid rgba(0,0,0,0.05);
+    }
+    .details-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    .specs{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    .spec{
+      background:rgba(255,255,255,0.02);
+      padding:14px;
+      border-radius:12px;
+      border-left:3px solid var(--accent);
+      transition:all 0.3s ease;
+    }
+    body.light-mode .spec{
+      background:rgba(0,0,0,0.02);
+      border-left:3px solid #2e7d32;
+    }
+    .spec:hover{
+      background:rgba(255,255,255,0.04);
+      transform:translateY(-2px);
+    }
+    body.light-mode .spec:hover{
+      background:rgba(0,0,0,0.04);
+    }
+    .spec b{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    body.light-mode .spec b{color:var(--muted-light);}
+    .spec b i{
+      color:var(--accent);
+    }
+    body.light-mode .spec b i{color:#2e7d32;}
+    .spec span{
+      font-size:15px;
+      font-weight:500;
+    }
+    body.light-mode .spec span{color:var(--text-light);}
+    .highlight-features{
+      margin-top:20px;
+      padding:16px;
+      background:linear-gradient(135deg, rgba(61, 220, 132, 0.05), rgba(108, 99, 255, 0.05));
+      border-radius:12px;
+      border:1px solid rgba(61, 220, 132, 0.1);
+    }
+    body.light-mode .highlight-features{
+      background:linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(106, 27, 154, 0.05));
+      border:1px solid rgba(46, 125, 50, 0.2);
+    }
+    .highlight-features h3{
+      margin:0 0 12px;
+      color:var(--accent);
+      font-size:16px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    body.light-mode .highlight-features h3{color:#2e7d32;}
+    .highlight-features ul{
+      margin:0;
+      padding-right:20px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+    }
+    .highlight-features li{
+      color:var(--muted);
+      font-size:14px;
+      padding:4px 0;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    body.light-mode .highlight-features li{color:var(--muted-light);}
+    .highlight-features li i{
+      color:var(--accent);
+      font-size:12px;
+    }
+    body.light-mode .highlight-features li i{color:#2e7d32;}
+
+    .placeholder{
+      color:var(--muted);
+      text-align:center;
+      padding:50px 10px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+    }
+    body.light-mode .placeholder{color:var(--muted-light);}
+    .placeholder i{
+      font-size:48px;
+      opacity:0.3;
+    }
+
+    /* modal */
+    .modal-backdrop{
+      position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;padding:18px;
+      z-index:1000;
+      backdrop-filter: blur(5px);
+    }
+    .modal{
+      width:100%;max-width:900px;background:linear-gradient(180deg,#0a1120,#0d1628);border-radius:20px;padding:24px;border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 25px 50px rgba(0,0,0,0.5);
+      max-height:90vh;
+      overflow-y:auto;
+    }
+    body.light-mode .modal{
+      background:linear-gradient(180deg, #ffffff, #f8f9fa);
+      border:1px solid rgba(0,0,0,0.1);
+    }
+    .modal-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:20px;
+    }
+    .modal-title{
+      font-size:24px;
+      margin:0;
+      color:#fff;
+    }
+    body.light-mode .modal-title{color:var(--text-light);}
+    .close-modal{
+      background:none;border:0;color:var(--muted);font-size:24px;cursor:pointer;
+      width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      transition:all 0.3s ease;
+    }
+    .close-modal:hover{
+      background:rgba(255,255,255,0.05);
+      color:#fff;
+    }
+    body.light-mode .close-modal:hover{
+      background:rgba(0,0,0,0.05);
+      color:var(--text-light);
+    }
+    .modal-body{
+      display:grid;
+      grid-template-columns:300px 1fr;
+      gap:24px;
+    }
+    .modal-thumb{
+      width:100%;height:300px;border-radius:16px;background:#071426;
+      display:flex;align-items:center;justify-content:center;
+      border:1px solid rgba(255,255,255,0.05);
+      overflow:hidden;
+    }
+    body.light-mode .modal-thumb{
+      background:#e8f5e9;
+      border:1px solid rgba(0,0,0,0.05);
+    }
+    .modal-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+    }
+    .modal-specs{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+      gap:12px;
+    }
+    .modal-features{
+      margin-top:24px;
+      padding-top:24px;
+      border-top:1px solid rgba(255,255,255,0.05);
+    }
+    body.light-mode .modal-features{
+      border-top:1px solid rgba(0,0,0,0.05);
+    }
+    .modal-features h3{
+      margin:0 0 16px;
+      font-size:18px;
+      color:var(--accent);
+    }
+    body.light-mode .modal-features h3{color:#2e7d32;}
+    .features-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));
+      gap:12px;
+    }
+    .feature-item{
+      background:rgba(255,255,255,0.02);
+      padding:12px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    body.light-mode .feature-item{
+      background:rgba(0,0,0,0.02);
+    }
+    .feature-icon{
+      width:36px;height:36px;border-radius:8px;background:rgba(61,220,132,0.1);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--accent);
+      flex-shrink:0;
+    }
+    body.light-mode .feature-icon{
+      background:rgba(46,125,50,0.1);
+      color:#2e7d32;
+    }
+    .feature-text h4{
+      margin:0;font-size:14px;font-weight:600;
+    }
+    body.light-mode .feature-text h4{color:var(--text-light);}
+    .feature-text p{
+      margin:4px 0 0;font-size:12px;color:var(--muted);
+    }
+    body.light-mode .feature-text p{color:var(--muted-light);}
+
+    .action-buttons{
+      display:flex;
+      gap:12px;
+      margin-top:24px;
+      padding-top:24px;
+      border-top:1px solid rgba(255,255,255,0.05);
+    }
+    body.light-mode .action-buttons{
+      border-top:1px solid rgba(0,0,0,0.05);
+    }
+    .btn{
+      padding:12px 20px;
+      border-radius:12px;
+      border:none;
+      font-size:14px;
+      font-weight:600;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      flex:1;
+    }
+    .btn-primary{
+      background:linear-gradient(90deg, var(--accent), var(--accent-secondary));
+      color:#fff;
+    }
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(61, 220, 132, 0.3);
+    }
+    body.light-mode .btn-primary{
+      background:linear-gradient(90deg, #2e7d32, #6a1b9a);
+    }
+    .btn-secondary{
+      background:rgba(255,255,255,0.05);
+      color:var(--muted);
+      border:1px solid rgba(255,255,255,0.08);
+    }
+    .btn-secondary:hover{
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+    }
+    body.light-mode .btn-secondary{
+      background:rgba(0,0,0,0.05);
+      color:var(--muted-light);
+      border:1px solid rgba(0,0,0,0.1);
+    }
+    body.light-mode .btn-secondary:hover{
+      background:rgba(0,0,0,0.08);
+      color:var(--text-light);
+    }
+    
+    /* Compare section */
+    .compare-section{
+      margin-top:30px;
+      padding:20px;
+      background:linear-gradient(135deg, rgba(61, 220, 132, 0.05), rgba(108, 99, 255, 0.05));
+      border-radius:var(--radius);
+      border:1px solid rgba(61, 220, 132, 0.1);
+    }
+    body.light-mode .compare-section{
+      background:linear-gradient(135deg, rgba(46, 125, 50, 0.05), rgba(106, 27, 154, 0.05));
+      border:1px solid rgba(46, 125, 50, 0.2);
+    }
+    .compare-section h3{
+      margin:0 0 15px;
+      color:var(--accent);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    body.light-mode .compare-section h3{color:#2e7d32;}
+    .compare-items{
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+    }
+    .compare-item{
+      flex:1;
+      min-width:150px;
+      padding:15px;
+      background:rgba(255,255,255,0.03);
+      border-radius:12px;
+      border:2px solid transparent;
+      transition:all 0.3s;
+    }
+    body.light-mode .compare-item{
+      background:rgba(255,255,255,0.7);
+    }
+    .compare-item.selected{
+      border-color:var(--accent);
+    }
+    body.light-mode .compare-item.selected{
+      border-color:#2e7d32;
+    }
+    .compare-item-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .compare-item-thumb{
+      width:50px;
+      height:50px;
+      border-radius:8px;
+      background:#071426;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+    }
+    body.light-mode .compare-item-thumb{
+      background:#e8f5e9;
+    }
+    .compare-item-name{
+      font-weight:600;
+      font-size:14px;
+    }
+    .compare-item-price{
+      font-size:12px;
+      color:var(--accent);
+      margin-top:3px;
+    }
+    body.light-mode .compare-item-price{color:#2e7d32;}
+    .compare-actions{
+      display:flex;
+      gap:10px;
+      margin-top:15px;
+    }
+    .compare-btn{
+      flex:1;
+      padding:10px;
+      font-size:13px;
+    }
+    
+    /* Footer */
+    .footer-sections{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
+      gap:30px;
+      margin-top:40px;
+      padding:30px;
+      background:linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border-radius:var(--radius);
+      border:1px solid rgba(255,255,255,0.05);
+    }
+    body.light-mode .footer-sections{
+      background:linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      border:1px solid rgba(0,0,0,0.08);
+    }
+    .footer-section h3{
+      margin:0 0 15px;
+      color:var(--accent);
+      font-size:18px;
+    }
+    body.light-mode .footer-section h3{color:#2e7d32;}
+    .footer-section p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+    body.light-mode .footer-section p{color:var(--muted-light);}
+    .footer-section ul{
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .footer-section li{
+      margin-bottom:10px;
+    }
+    .footer-section a{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:14px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      transition:color 0.3s;
+    }
+    body.light-mode .footer-section a{color:var(--muted-light);}
+    .footer-section a:hover{
+      color:var(--accent);
+    }
+    body.light-mode .footer-section a:hover{color:#2e7d32;}
+    .footer-section a i{
+      width:20px;
+      text-align:center;
+    }
+    
+    .copyright{
+      text-align:center;
+      margin-top:30px;
+      padding-top:20px;
+      border-top:1px solid rgba(255,255,255,0.05);
+      color:var(--muted);
+      font-size:14px;
+    }
+    body.light-mode .copyright{
+      border-top:1px solid rgba(0,0,0,0.05);
+      color:var(--muted-light);
+    }
+
+    @media (max-width:1100px){
+      main{grid-template-columns:1fr}
+      .details{position:static;order:2;max-height:none;}
+    }
+    @media (max-width:768px){
+      header{flex-direction:column;align-items:flex-start;gap:20px;}
+      .controls{width:100%;}
+      input.search{min-width:100%;}
+      .list{grid-template-columns:1fr;}
+      .modal-body{grid-template-columns:1fr;}
+      .stats{flex-wrap:wrap;}
+      .stat{min-width:calc(50% - 12px);}
+      .footer-sections{grid-template-columns:1fr;}
+    }
+
+    /* Toggle switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 12px;
+    }
+    body.light-mode .toggle-container{
+      background: rgba(0,0,0,0.02);
+    }
+    .toggle-label {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    body.light-mode .toggle-label{color:var(--muted-light);}
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255,255,255,0.1);
+      transition: .4s;
+      border-radius: 24px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+    
+    /* Quick filters */
+    .quick-filters{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin:15px 0;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .phone-card, .details, .spec {
+      animation: fadeIn 0.5s ease forwards;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+
+  <header>
+    <div class="brand">
+      <div class="logo">مقيم</div>
+      <div>
+        <h1>مقيم — قاعدة بيانات الهواتف الذكية العالمية</h1>
+        <p class="lead">منصة متكاملة لمقارنة ومراجعة جميع الهواتف الذكية في العالم</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <input id="search" class="search" placeholder="ابحث عن أي هاتف في العالم..." />
+      <select id="filterBrand">
+        <option value="">كل العلامات</option>
+      </select>
+      <select id="filterPrice">
+        <option value="">كل الأسعار</option>
+        <option value="budget">اقتصادي (أقل من 1500 ر.س)</option>
+        <option value="mid">متوسط (1500-3000 ر.س)</option>
+        <option value="flagship">الأعلى (أكثر من 3000 ر.س)</option>
+      </select>
+      <button class="btn-secondary" id="themeToggle">
+        <i class="fas fa-moon"></i> الوضع الليلي
+      </button>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat">
+      <span class="stat-value" id="totalPhones">0</span>
+      <span class="stat-label">إجمالي الهواتف</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="brandsCount">0</span>
+      <span class="stat-label">علامة تجارية</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="avgPrice">0</span>
+      <span class="stat-label">متوسط السعر</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="newestPhone">2025</span>
+      <span class="stat-label">أحدث إصدار</span>
+    </div>
+  </div>
+
+  <div class="toggle-container">
+    <span class="toggle-label">عرض الصور:</span>
+    <label class="toggle-switch">
+      <input type="checkbox" id="imageToggle" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="quick-filters">
+    <button class="btn-secondary" data-brand="Samsung">سامسونج</button>
+    <button class="btn-secondary" data-brand="Apple">آيفون</button>
+    <button class="btn-secondary" data-brand="Xiaomi">شاومي</button>
+    <button class="btn-secondary" data-brand="Google">جوجل</button>
+    <button class="btn-secondary" data-brand="OnePlus">ون بلس</button>
+    <button class="btn-secondary" data-brand="Huawei">هواوي</button>
+    <button class="btn-secondary" data-brand="Realme">ريلمي</button>
+    <button class="btn-secondary" data-brand="Oppo">أوبو</button>
+    <button class="btn-secondary" data-brand="Vivo">فيفو</button>
+    <button class="btn-secondary" data-brand="all">عرض الكل</button>
+  </div>
+
+  <main>
+    <section>
+      <div class="compare-section" id="compareSection">
+        <h3><i class="fas fa-balance-scale"></i> المقارنة (حد أقصى 3 هواتف)</h3>
+        <div class="compare-items" id="compareItems">
+          <div class="placeholder" style="padding:20px; width:100%;">
+            <i class="fas fa-balance-scale"></i>
+            <div>لم يتم اختيار أي هواتف للمقارنة بعد</div>
+            <div style="font-size:13px; margin-top:8px;">انقر على زر "إضافة للمقارنة" في أي هاتف</div>
+          </div>
+        </div>
+        <div class="compare-actions">
+          <button class="btn btn-primary" id="runCompare">
+            <i class="fas fa-chart-bar"></i> تشغيل المقارنة
+          </button>
+          <button class="btn btn-secondary" id="clearCompare">
+            <i class="fas fa-trash"></i> مسح الكل
+          </button>
+        </div>
+      </div>
+      
+      <div id="list" class="list">
+        <!-- بطاقات الهواتف تظهر هنا -->
+      </div>
+    </section>
+
+    <aside class="details" id="detailsPanel">
+      <div id="detailsContent" class="placeholder">
+        <i class="fas fa-globe-americas"></i>
+        <div>اختر هاتفاً لعرض المواصفات التفصيلية</div>
+        <div style="font-size:13px; margin-top:8px;">قاعدة بيانات عالمية شاملة لأهم الهواتف</div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h3 id="modalTitle" class="modal-title">تفاصيل الهاتف</h3>
+        <button id="closeModal" class="close-modal">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="addToCompareBtn">
+          <i class="fas fa-balance-scale"></i> إضافة للمقارنة
+        </button>
+        <button class="btn btn-secondary" id="shareBtn">
+          <i class="fas fa-share-alt"></i> مشاركة
+        </button>
+        <button class="btn btn-secondary" id="favoriteBtn">
+          <i class="far fa-heart"></i> حفظ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="compareModal">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:1200px;">
+      <div class="modal-header">
+        <h3 class="modal-title">مقارنة الهواتف</h3>
+        <button class="close-modal" id="closeCompareModal">✕</button>
+      </div>
+      <div id="compareModalBody" style="padding:20px 0; overflow-x:auto;">
+        <!-- محتوى المقارنة يظهر هنا -->
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-sections">
+    <div class="footer-section">
+      <h3><i class="fas fa-info-circle"></i> من نحن</h3>
+      <p>نحن شركة <strong>أنس وبراء العربية لتطوير التكنولوجيا</strong>، نعمل على تقديم حلول تقنية مبتكرة تواكب تطورات العصر. يعد مشروع "مقيم" أحد مبادراتنا الرائدة في مجال مقارنة وتقييم الأجهزة الذكية، حيث نسعى لتقديم تجربة مستخدم فريدة ودقيقة للمستخدم العربي.</p>
+      <p>نؤمن بأن التكنولوجيا يجب أن تكون في متناول الجميع، ونسعى جاهدين لتحقيق هذه الرؤية من خلال منصاتنا الرقمية المتميزة.</p>
+    </div>
+    
+    <div class="footer-section">
+      <h3><i class="fas fa-phone-alt"></i> طريقة التواصل</h3>
+      <ul>
+        <li>
+          <a href="https://wa.me/201055891020" target="_blank">
+            <i class="fab fa-whatsapp"></i> واتساب: +201055891020
+          </a>
+        </li>
+        <li>
+          <a href="mailto:alpraa37@gmail.com">
+            <i class="fas fa-envelope"></i> البريد الإلكتروني: alpraa37@gmail.com
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-map-marker-alt"></i> مقر الشركة: الرياض، المملكة العربية السعودية
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i class="fas fa-clock"></i> أوقات العمل: الأحد - الخميس (9 صباحاً - 5 مساءً)
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h3><i class="fas fa-shield-alt"></i> سياسة الخصوصية</h3>
+      <p>نحن نحرص على حماية خصوصية بيانات مستخدمينا. لا نقوم بتخزين أو مشاركة أي معلومات شخصية دون موافقتكم المسبقة. جميع البيانات المعروضة على الموقع هي لأغراض المقارنة والمعرفة التقنية فقط.</p>
+      <ul>
+        <li><a href="#"><i class="fas fa-check"></i> لا نبيع بيانات المستخدمين</a></li>
+        <li><a href="#"><i class="fas fa-check"></i> تشفير البيانات الحساسة</a></li>
+        <li><a href="#"><i class="fas fa-check"></i> الامتثال للقوانين المحلية والدولية</a></li>
+        <li><a href="#"><i class="fas fa-check"></i> تحديث السياسات بانتظام</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h3><i class="fas fa-link"></i> روابط سريعة</h3>
+      <ul>
+        <li><a href="#"><i class="fas fa-mobile-alt"></i> أحدث الهواتف</a></li>
+        <li><a href="#"><i class="fas fa-star"></i> أفضل التقييمات</a></li>
+        <li><a href="#"><i class="fas fa-chart-line"></i> مقارنة الأسعار</a></li>
+        <li><a href="#"><i class="fas fa-newspaper"></i> المدونة التقنية</a></li>
+        <li><a href="#"><i class="fas fa-question-circle"></i> الأسئلة الشائعة</a></li>
+        <li><a href="#"><i class="fas fa-headset"></i> الدعم الفني</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="copyright">
+    <div>جميع الحقوق محفوظة © 2025 شركة أنس وبراء العربية لتطوير التكنولوجيا</div>
+    <div style="margin-top:8px; font-size:12px; opacity:0.7;">مشروع "مقيم" - قاعدة بيانات الهواتف الذكية العالمية</div>
+  </div>
+
+  <script>
+    // 🌍 قاعدة بيانات شاملة للهواتف الذكية
+    const phones = [
+      // =============== سامسونج (Samsung) - 20 هاتف ===============
+      {
+        id: 's25u',
+        brand: 'Samsung',
+        model: 'Galaxy S25 Ultra',
+        imageText: 'S25U',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-s25/overview/galaxy-s25-ultra-kv.jpg',
+        release: '2025-01-17',
+        price: 5499,
+        rating: 4.8,
+        status: 'متوفر',
+        features: [
+          "شاشة ديناميكية AMOLED 2X 6.9 بوصة",
+          "كاميرا 200 ميجابكسل مع تقنية Tetra Pixel",
+          "قلم S-Pen مدمج ومحسن",
+          "مقاومة الماء والغبار IP68",
+          "شحن سريع 65 واط",
+          "شحن لاسلكي 25 واط",
+          "معالج Snapdragon 8 Gen 4",
+          "ذاكرة 16 جيجابايت رام",
+          "تخزين 1 تيرابايت",
+          "بطارية 5500 مللي أمبير"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 4',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5500 مللي أمبير',
+          screen: '6.9" Dynamic AMOLED 2X 144Hz',
+          cameras: '200MP + 50MP + 12MP + 10MP',
+          os: 'Android 15 مع One UI 7',
+          weight: '238 جرام',
+          waterResistance: 'IP68',
+          charging: '65W سريع + 25W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، رمادي، بنفسجي، أخضر'
+        }
+      },
+      {
+        id: 's25',
+        brand: 'Samsung',
+        model: 'Galaxy S25',
+        imageText: 'S25',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-s25/overview/galaxy-s25-kv.jpg',
+        release: '2025-01-17',
+        price: 3999,
+        rating: 4.5,
+        status: 'متوفر',
+        features: [
+          "شاشة Dynamic AMOLED 2X 6.3 بوصة",
+          "كاميرا 50 ميجابكسل رئيسية",
+          "مقاومة الماء والغبار IP68",
+          "شحن سريع 45 واط",
+          "معالج Exynos 2400",
+          "ذاكرة 8 جيجابايت رام",
+          "تخزين 256 جيجابايت"
+        ],
+        specs: {
+          cpu: 'Exynos 2400',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '4500 مللي أمبير',
+          screen: '6.3" Dynamic AMOLED 2X 120Hz',
+          cameras: '50MP + 12MP + 10MP',
+          os: 'Android 15 مع One UI 7',
+          weight: '185 جرام',
+          waterResistance: 'IP68',
+          charging: '45W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، أبيض، أخضر، أرجواني'
+        }
+      },
+      {
+        id: 's24fe',
+        brand: 'Samsung',
+        model: 'Galaxy S24 FE',
+        imageText: 'S24FE',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-s24-fe/overview/galaxy-s24-fe-kv.jpg',
+        release: '2024-10-10',
+        price: 2799,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "شاشة Super AMOLED 120Hz",
+          "كاميرا 50 ميجابكسل رئيسية",
+          "مقاومة الماء والغبار IP68",
+          "شحن سريع 25 واط",
+          "معالج Exynos 2200",
+          "ذاكرة 8 جيجابايت رام"
+        ],
+        specs: {
+          cpu: 'Exynos 2200',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '4500 مللي أمبير',
+          screen: '6.4" Super AMOLED 120Hz',
+          cameras: '50MP + 12MP + 8MP',
+          os: 'Android 14 مع One UI 6',
+          weight: '195 جرام',
+          waterResistance: 'IP68',
+          charging: '25W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أخضر، أرجواني، أبيض'
+        }
+      },
+      {
+        id: 'fold6',
+        brand: 'Samsung',
+        model: 'Galaxy Z Fold 6',
+        imageText: 'ZF6',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-z-fold6/overview/galaxy-z-fold6-kv.jpg',
+        release: '2024-07-26',
+        price: 6999,
+        rating: 4.6,
+        status: 'متوفر',
+        features: [
+          "شاشة قابلة للطي 7.6 بوصة",
+          "شاشة خارجية 6.2 بوصة",
+          "كاميرا تحت الشاشة",
+          "مقاومة الماء والغبار IPX8",
+          "قلم S-Pen قابل للطي"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '4400 مللي أمبير',
+          screen: '7.6" ديناميكية AMOLED قابلة للطي',
+          cameras: '50MP + 12MP + 10MP',
+          os: 'Android 14 مع One UI 6.1.1',
+          weight: '239 جرام',
+          waterResistance: 'IPX8',
+          charging: '25W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، فضي، أزرق'
+        }
+      },
+      {
+        id: 'flip6',
+        brand: 'Samsung',
+        model: 'Galaxy Z Flip 6',
+        imageText: 'ZFL6',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-z-flip6/overview/galaxy-z-flip6-kv.jpg',
+        release: '2024-07-26',
+        price: 3999,
+        rating: 4.4,
+        status: 'متوفر',
+        features: [
+          "تصميم قابل للطي بشكل كتاب",
+          "شاشة غطاء 3.4 بوصة",
+          "شاشة رئيسية 6.7 بوصة",
+          "مقاومة الماء والغبار IPX8"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '8 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '3700 مللي أمبير',
+          screen: '6.7" ديناميكية AMOLED قابلة للطي',
+          cameras: '50MP + 12MP',
+          os: 'Android 14 مع One UI 6.1.1',
+          weight: '187 جرام',
+          waterResistance: 'IPX8',
+          charging: '25W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أرجواني، أصفر، أخضر، أسود'
+        }
+      },
+      {
+        id: 'a55',
+        brand: 'Samsung',
+        model: 'Galaxy A55 5G',
+        imageText: 'A55',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-a55/overview/galaxy-a55-kv.jpg',
+        release: '2024-03-11',
+        price: 1899,
+        rating: 4.1,
+        status: 'متوفر',
+        features: [
+          "شاشة Super AMOLED 120Hz",
+          "كاميرا 50 ميجابكسل مع OIS",
+          "مقاومة الماء والغبار IP67",
+          "بطارية 5000 مللي أمبير",
+          "شحن سريع 25 واط"
+        ],
+        specs: {
+          cpu: 'Exynos 1480',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.6" Super AMOLED 120Hz',
+          cameras: '50MP + 12MP + 5MP',
+          os: 'Android 14 مع One UI 6',
+          weight: '213 جرام',
+          waterResistance: 'IP67',
+          charging: '25W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أرجواني، أصفر'
+        }
+      },
+      {
+        id: 'a35',
+        brand: 'Samsung',
+        model: 'Galaxy A35 5G',
+        imageText: 'A35',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-a35/overview/galaxy-a35-kv.jpg',
+        release: '2024-03-11',
+        price: 1499,
+        rating: 3.9,
+        status: 'متوفر',
+        features: [
+          "شاشة Super AMOLED 120Hz",
+          "كاميرا 50 ميجابكسل",
+          "مقاومة الماء والغبار IP67",
+          "بطارية 5000 مللي أمبير"
+        ],
+        specs: {
+          cpu: 'Exynos 1380',
+          ram: '6 / 8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.6" Super AMOLED 120Hz',
+          cameras: '50MP + 8MP + 5MP',
+          os: 'Android 14 مع One UI 6',
+          weight: '209 جرام',
+          waterResistance: 'IP67',
+          charging: '25W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أرجواني'
+        }
+      },
+      {
+        id: 'm55',
+        brand: 'Samsung',
+        model: 'Galaxy M55 5G',
+        imageText: 'M55',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-m55/overview/galaxy-m55-kv.jpg',
+        release: '2024-04-15',
+        price: 1699,
+        rating: 4.0,
+        status: 'متوفر',
+        features: [
+          "شاشة Super AMOLED 120Hz",
+          "كاميرا 50 ميجابكسل مع OIS",
+          "بطارية 5000 مللي أمبير",
+          "شحن سريع 45 واط",
+          "معالج Snapdragon 7 Gen 1"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7 Gen 1',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.7" Super AMOLED 120Hz',
+          cameras: '50MP + 8MP + 2MP',
+          os: 'Android 14 مع One UI 6',
+          weight: '198 جرام',
+          waterResistance: 'IP67',
+          charging: '45W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أخضر، أزرق'
+        }
+      },
+      {
+        id: 'f55',
+        brand: 'Samsung',
+        model: 'Galaxy F55 5G',
+        imageText: 'F55',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-f55/overview/galaxy-f55-kv.jpg',
+        release: '2024-05-20',
+        price: 1599,
+        rating: 4.0,
+        status: 'متوفر',
+        features: [
+          "شاشة Super AMOLED 120Hz",
+          "تصميم نحيف 7.8 مم",
+          "بطارية 5000 مللي أمبير",
+          "شحن سريع 45 واط"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7 Gen 1',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.7" Super AMOLED 120Hz',
+          cameras: '50MP + 8MP + 2MP',
+          os: 'Android 14 مع One UI 6',
+          weight: '195 جرام',
+          waterResistance: 'IP67',
+          charging: '45W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أخضر'
+        }
+      },
+      {
+        id: 's23fe',
+        brand: 'Samsung',
+        model: 'Galaxy S23 FE',
+        imageText: 'S23FE',
+        imageUrl: 'https://images.samsung.com/is/image/samsung/assets/ar/galaxy-s23-fe/overview/galaxy-s23-fe-kv.jpg',
+        release: '2023-10-03',
+        price: 2499,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "شاشة Dynamic AMOLED 2X 120Hz",
+          "كاميرا 50 ميجابكسل",
+          "مقاومة الماء والغبار IP68",
+          "معالج Exynos 2200/Snapdragon 8 Gen 1"
+        ],
+        specs: {
+          cpu: 'Exynos 2200 / Snapdragon 8 Gen 1',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '4500 مللي أمبير',
+          screen: '6.4" Dynamic AMOLED 2X 120Hz',
+          cameras: '50MP + 12MP + 8MP',
+          os: 'Android 13 مع One UI 5.1',
+          weight: '209 جرام',
+          waterResistance: 'IP68',
+          charging: '25W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، أبيض، أرجواني، أخضر'
+        }
+      },
+
+      // =============== آيفون (Apple) - 15 هاتف ===============
+      {
+        id: 'iphone16pm',
+        brand: 'Apple',
+        model: 'iPhone 16 Pro Max',
+        imageText: 'i16PM',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-max-natural-titanium-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1724242535713',
+        release: '2024-09-20',
+        price: 5999,
+        rating: 4.9,
+        status: 'متوفر',
+        features: [
+          "شريحة A18 Pro Bionic",
+          "شاشة Super Retina XDR",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "كاميرا تليفوتوغرافية 5x",
+          "مقاومة الماء والغبار IP68",
+          "شحن MagSafe"
+        ],
+        specs: {
+          cpu: 'A18 Pro Bionic',
+          ram: '8 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '4676 مللي أمبير',
+          screen: '6.9" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP + LiDAR',
+          os: 'iOS 18',
+          weight: '221 جرام',
+          waterResistance: 'IP68',
+          charging: '27W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'تيتانيوم طبيعي، تيتانيوم أسود، تيتانيوم أبيض، تيتانيوم أزرق'
+        }
+      },
+      {
+        id: 'iphone16p',
+        brand: 'Apple',
+        model: 'iPhone 16 Pro',
+        imageText: 'i16P',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-pro-natural-titanium-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1724242535700',
+        release: '2024-09-20',
+        price: 4999,
+        rating: 4.8,
+        status: 'متوفر',
+        features: [
+          "شريحة A18 Pro Bionic",
+          "شاشة Super Retina XDR",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "كاميرا تليفوتوغرافية 5x",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A18 Pro Bionic',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '3450 مللي أمبير',
+          screen: '6.3" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP + LiDAR',
+          os: 'iOS 18',
+          weight: '194 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'تيتانيوم طبيعي، تيتانيوم أسود، تيتانيوم أبيض، تيتانيوم أزرق'
+        }
+      },
+      {
+        id: 'iphone16',
+        brand: 'Apple',
+        model: 'iPhone 16',
+        imageText: 'i16',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-black-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1724242535678',
+        release: '2024-09-20',
+        price: 3999,
+        rating: 4.6,
+        status: 'متوفر',
+        features: [
+          "شريحة A18 Bionic",
+          "شاشة Super Retina XDR",
+          "نظام كاميرا مزدوج",
+          "زر Capture الجديد",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A18 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '3561 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '48MP + 12MP',
+          os: 'iOS 18',
+          weight: '173 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 12W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، أزرق، وردي، أخضر، أصفر'
+        }
+      },
+      {
+        id: 'iphone16p',
+        brand: 'Apple',
+        model: 'iPhone 16 Plus',
+        imageText: 'i16+',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-16-plus-black-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1724242535685',
+        release: '2024-09-20',
+        price: 4499,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "شريحة A18 Bionic",
+          "شاشة Super Retina XDR كبيرة",
+          "نظام كاميرا مزدوج",
+          "بطارية طويلة الأمد",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A18 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '4383 مللي أمبير',
+          screen: '6.7" Super Retina XDR OLED',
+          cameras: '48MP + 12MP',
+          os: 'iOS 18',
+          weight: '201 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 12W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، أزرق، وردي، أخضر، أصفر'
+        }
+      },
+      {
+        id: 'iphone15',
+        brand: 'Apple',
+        model: 'iPhone 15',
+        imageText: 'i15',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-black-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1693010533007',
+        release: '2023-09-22',
+        price: 3499,
+        rating: 4.5,
+        status: 'متوفر',
+        features: [
+          "شريحة A16 Bionic",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "تصميم Dynamic Island",
+          "منفذ USB-C",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A16 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '3349 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '48MP + 12MP',
+          os: 'iOS 17',
+          weight: '171 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أخضر، أصفر، وردي'
+        }
+      },
+      {
+        id: 'iphone15p',
+        brand: 'Apple',
+        model: 'iPhone 15 Pro',
+        imageText: 'i15P',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-natural-titanium-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1693010533007',
+        release: '2023-09-22',
+        price: 4999,
+        rating: 4.8,
+        status: 'متوفر',
+        features: [
+          "شريحة A17 Pro Bionic",
+          "شاشة Super Retina XDR",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "مقاومة الماء والغبار IP68",
+          "تصميم تيتانيوم"
+        ],
+        specs: {
+          cpu: 'A17 Pro Bionic',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '3274 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP',
+          os: 'iOS 17',
+          weight: '187 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'تيتانيوم طبيعي، تيتانيوم أسود، تيتانيوم أبيض، تيتانيوم أزرق'
+        }
+      },
+      {
+        id: 'iphone15pm',
+        brand: 'Apple',
+        model: 'iPhone 15 Pro Max',
+        imageText: 'i15PM',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-natural-titanium-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1693010533007',
+        release: '2023-09-22',
+        price: 5499,
+        rating: 4.9,
+        status: 'متوفر',
+        features: [
+          "شريحة A17 Pro Bionic",
+          "شاشة Super Retina XDR كبيرة",
+          "كاميرا تليفوتوغرافية 5x",
+          "مقاومة الماء والغبار IP68",
+          "تصميم تيتانيوم"
+        ],
+        specs: {
+          cpu: 'A17 Pro Bionic',
+          ram: '8 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '4422 مللي أمبير',
+          screen: '6.7" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP',
+          os: 'iOS 17',
+          weight: '221 جرام',
+          waterResistance: 'IP68',
+          charging: '27W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'تيتانيوم طبيعي، تيتانيوم أسود، تيتانيوم أبيض، تيتانيوم أزرق'
+        }
+      },
+      {
+        id: 'iphone14',
+        brand: 'Apple',
+        model: 'iPhone 14',
+        imageText: 'i14',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-black-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1661471848866',
+        release: '2022-09-16',
+        price: 2999,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "شريحة A15 Bionic",
+          "كاميرا مزدوجة 12 ميجابكسل",
+          "مقاومة الماء والغبار IP68",
+          "أمان عبر الأقمار الصناعية",
+          "شحن سريع 20 واط"
+        ],
+        specs: {
+          cpu: 'A15 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '3279 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '12MP + 12MP',
+          os: 'iOS 16',
+          weight: '172 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أرجواني، أصفر، (PRODUCT)RED'
+        }
+      },
+      {
+        id: 'iphone14p',
+        brand: 'Apple',
+        model: 'iPhone 14 Pro',
+        imageText: 'i14P',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-deeppurple-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1661471848866',
+        release: '2022-09-16',
+        price: 4499,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "شريحة A16 Bionic",
+          "Dynamic Island",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "شاشة Always-On Display",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A16 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '3200 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP',
+          os: 'iOS 16',
+          weight: '206 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'بنفسجي عميق، ذهبي، فضي، أسود'
+        }
+      },
+      {
+        id: 'iphone14pm',
+        brand: 'Apple',
+        model: 'iPhone 14 Pro Max',
+        imageText: 'i14PM',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-14-pro-max-deeppurple-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1661471848866',
+        release: '2022-09-16',
+        price: 4999,
+        rating: 4.8,
+        status: 'متوفر',
+        features: [
+          "شريحة A16 Bionic",
+          "Dynamic Island",
+          "كاميرا رئيسية 48 ميجابكسل",
+          "شاشة كبيرة Always-On Display",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A16 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '4323 مللي أمبير',
+          screen: '6.7" Super Retina XDR OLED',
+          cameras: '48MP + 12MP + 12MP',
+          os: 'iOS 16',
+          weight: '240 جرام',
+          waterResistance: 'IP68',
+          charging: '27W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'بنفسجي عميق، ذهبي، فضي، أسود'
+        }
+      },
+      {
+        id: 'iphone13',
+        brand: 'Apple',
+        model: 'iPhone 13',
+        imageText: 'i13',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-13-pink-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1631651741000',
+        release: '2021-09-24',
+        price: 2599,
+        rating: 4.4,
+        status: 'متوفر',
+        features: [
+          "شريحة A15 Bionic",
+          "كاميرا مزدوجة محسنة",
+          "تصميم جديد مع شاشة أصغر",
+          "مقاومة الماء والغبار IP68",
+          "بطارية أفضل"
+        ],
+        specs: {
+          cpu: 'A15 Bionic',
+          ram: '4 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '3227 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '12MP + 12MP',
+          os: 'iOS 15',
+          weight: '174 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.0',
+          colors: 'وردي، أزرق، منتصف الليل، نجومي، أخضر'
+        }
+      },
+      {
+        id: 'iphone13p',
+        brand: 'Apple',
+        model: 'iPhone 13 Pro',
+        imageText: 'i13P',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-13-pro-silver-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1631651741000',
+        release: '2021-09-24',
+        price: 3999,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "شريحة A15 Bionic",
+          "شاشة ProMotion 120Hz",
+          "كاميرا ثلاثية محسنة",
+          "مقاومة الماء والغبار IP68",
+          "تصميم جرافيتي"
+        ],
+        specs: {
+          cpu: 'A15 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '3095 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED ProMotion',
+          cameras: '12MP + 12MP + 12MP + LiDAR',
+          os: 'iOS 15',
+          weight: '204 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.0',
+          colors: 'جرافيتي، ذهبي، فضي، أزرق سييري'
+        }
+      },
+      {
+        id: 'iphone13pm',
+        brand: 'Apple',
+        model: 'iPhone 13 Pro Max',
+        imageText: 'i13PM',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-13-pro-max-graphite-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1631651741000',
+        release: '2021-09-24',
+        price: 4499,
+        rating: 4.8,
+        status: 'متوفر',
+        features: [
+          "شريحة A15 Bionic",
+          "شاشة ProMotion 120Hz كبيرة",
+          "كاميرا ثلاثية محسنة",
+          "مقاومة الماء والغبار IP68",
+          "بطارية الأفضل في فئتها"
+        ],
+        specs: {
+          cpu: 'A15 Bionic',
+          ram: '6 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '4352 مللي أمبير',
+          screen: '6.7" Super Retina XDR OLED ProMotion',
+          cameras: '12MP + 12MP + 12MP + LiDAR',
+          os: 'iOS 15',
+          weight: '240 جرام',
+          waterResistance: 'IP68',
+          charging: '27W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.0',
+          colors: 'جرافيتي، ذهبي، فضي، أزرق سييري'
+        }
+      },
+      {
+        id: 'iphonese3',
+        brand: 'Apple',
+        model: 'iPhone SE (2022)',
+        imageText: 'iSE3',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-se-2022-midnight-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1644980638470',
+        release: '2022-03-18',
+        price: 1999,
+        rating: 4.0,
+        status: 'متوفر',
+        features: [
+          "شريحة A15 Bionic",
+          "تصميم كلاسيكي بشاشة 4.7 بوصة",
+          "Touch ID في زر الصفحة الرئيسية",
+          "مقاومة الماء والغبار IP67",
+          "دعم 5G"
+        ],
+        specs: {
+          cpu: 'A15 Bionic',
+          ram: '4 جيجابايت',
+          storage: '64 / 128 / 256 جيجابايت',
+          battery: '2018 مللي أمبير',
+          screen: '4.7" Retina HD',
+          cameras: '12MP',
+          os: 'iOS 15',
+          weight: '144 جرام',
+          waterResistance: 'IP67',
+          charging: '18W سريع + 7.5W لاسلكي',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.0',
+          colors: 'منتصف الليل، نجومي، (PRODUCT)RED'
+        }
+      },
+      {
+        id: 'iphone12',
+        brand: 'Apple',
+        model: 'iPhone 12',
+        imageText: 'i12',
+        imageUrl: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-12-black-select?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1604343703000',
+        release: '2020-10-23',
+        price: 2299,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "شريحة A14 Bionic",
+          "تصميم مسطح جديد",
+          "دعم 5G",
+          "شاشة Super Retina XDR OLED",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'A14 Bionic',
+          ram: '4 جيجابايت',
+          storage: '64 / 128 / 256 جيجابايت',
+          battery: '2815 مللي أمبير',
+          screen: '6.1" Super Retina XDR OLED',
+          cameras: '12MP + 12MP',
+          os: 'iOS 14',
+          weight: '164 جرام',
+          waterResistance: 'IP68',
+          charging: '20W سريع + 15W MagSafe',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.0',
+          colors: 'أسود، أبيض، أحمر، أخضر، أزرق، بنفسجي'
+        }
+      },
+
+      // =============== شاومي (Xiaomi) - 15 هاتف ===============
+      {
+        id: 'xiaomi14u',
+        brand: 'Xiaomi',
+        model: 'Xiaomi 14 Ultra',
+        imageText: 'X14U',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2024-02-22',
+        price: 4499,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "تعاون Leica للكاميرات",
+          "كاميرا رباعية مع عدسة متغيرة الفتحة",
+          "شاشة AMOLED منحنبة 120Hz",
+          "شحن سريع 90 واط",
+          "شحن لاسلكي 50 واط"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5300 مللي أمبير',
+          screen: '6.73" AMOLED منحنية 120Hz',
+          cameras: '50MP Leica + 50MP + 50MP + 50MP',
+          os: 'Android 14 مع HyperOS',
+          weight: '219.8 جرام',
+          waterResistance: 'IP68',
+          charging: '90W سريع + 50W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، أبيض، أخضر'
+        }
+      },
+      {
+        id: 'xiaomi14',
+        brand: 'Xiaomi',
+        model: 'Xiaomi 14',
+        imageText: 'X14',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2023-10-26',
+        price: 3299,
+        rating: 4.5,
+        status: 'متوفر',
+        features: [
+          "كاميرا Leica ثلاثية",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 90 واط",
+          "شحن لاسلكي 50 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '4610 مللي أمبير',
+          screen: '6.36" AMOLED 120Hz',
+          cameras: '50MP + 50MP + 50MP',
+          os: 'Android 14 مع HyperOS',
+          weight: '188 جرام',
+          waterResistance: 'IP68',
+          charging: '90W سريع + 50W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، أبيض، أخضر'
+        }
+      },
+      {
+        id: 'xiaomi13t',
+        brand: 'Xiaomi',
+        model: 'Xiaomi 13T Pro',
+        imageText: 'X13TP',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1694419084.37562439.png',
+        release: '2023-09-26',
+        price: 2799,
+        rating: 4.4,
+        status: 'متوفر',
+        features: [
+          "تعاون Leica للكاميرات",
+          "شاشة AMOLED 144Hz",
+          "شحن سريع 120 واط",
+          "معالج Dimensity 9200+",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Dimensity 9200+',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 144Hz',
+          cameras: '50MP Leica + 50MP + 12MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '200 جرام',
+          waterResistance: 'IP68',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، أخضر، أزرق'
+        }
+      },
+      {
+        id: 'redminote13',
+        brand: 'Xiaomi',
+        model: 'Redmi Note 13 Pro+',
+        imageText: 'RN13P',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2024-01-04',
+        price: 1699,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "كاميرا 200 ميجابكسل",
+          "شحن سريع 120 واط",
+          "مقاومة الماء والغبار IP68",
+          "معالج Dimensity 7200-Ultra"
+        ],
+        specs: {
+          cpu: 'Dimensity 7200-Ultra',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '200MP + 8MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '204.5 جرام',
+          waterResistance: 'IP68',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أرجواني، أبيض'
+        }
+      },
+      {
+        id: 'redminote13p',
+        brand: 'Xiaomi',
+        model: 'Redmi Note 13 Pro',
+        imageText: 'RN13P',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2024-01-04',
+        price: 1499,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "كاميرا 200 ميجابكسل",
+          "شحن سريع 67 واط",
+          "معالج Snapdragon 7s Gen 2",
+          "مقاومة الماء والغبار IP54"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7s Gen 2',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '5100 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '200MP + 8MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '187 جرام',
+          waterResistance: 'IP54',
+          charging: '67W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أرجواني، أبيض'
+        }
+      },
+      {
+        id: 'poco6p',
+        brand: 'Xiaomi',
+        model: 'POCO X6 Pro',
+        imageText: 'PX6P',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2024-01-11',
+        price: 1399,
+        rating: 4.1,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "معالج Dimensity 8300-Ultra",
+          "شحن سريع 67 واط",
+          "كاميرا 64 ميجابكسل",
+          "تصميم شبابي ملون"
+        ],
+        specs: {
+          cpu: 'Dimensity 8300-Ultra',
+          ram: '8 / 12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '64MP + 8MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '190 جرام',
+          waterResistance: 'IP54',
+          charging: '67W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أصفر، أزرق'
+        }
+      },
+      {
+        id: 'poco6',
+        brand: 'Xiaomi',
+        model: 'POCO X6',
+        imageText: 'PX6',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2024-01-11',
+        price: 1199,
+        rating: 4.0,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "معالج Snapdragon 7s Gen 2",
+          "شحن سريع 33 واط",
+          "كاميرا 64 ميجابكسل",
+          "تصميم خفيف الوزن"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7s Gen 2',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5100 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '64MP + 8MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '181 جرام',
+          waterResistance: 'IP54',
+          charging: '33W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أخضر'
+        }
+      },
+      {
+        id: 'redmi13c',
+        brand: 'Xiaomi',
+        model: 'Redmi 13C',
+        imageText: 'R13C',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1708910940.97535585.png',
+        release: '2023-11-10',
+        price: 699,
+        rating: 3.7,
+        status: 'متوفر',
+        features: [
+          "شاشة كبيرة 90Hz",
+          "كاميرا 50 ميجابكسل",
+          "بطارية 5000 مللي أمبير",
+          "معالج Helio G85",
+          "سعر اقتصادي"
+        ],
+        specs: {
+          cpu: 'Helio G85',
+          ram: '4 / 6 / 8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.74" IPS LCD 90Hz',
+          cameras: '50MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '192 جرام',
+          waterResistance: 'IP53',
+          charging: '18W سريع',
+          connectivity: '4G, Wi-Fi 5, Bluetooth 5.1',
+          colors: 'أسود، أزرق، أخضر، أرجواني'
+        }
+      },
+      {
+        id: 'xiaomi12t',
+        brand: 'Xiaomi',
+        model: 'Xiaomi 12T Pro',
+        imageText: 'X12TP',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1663667970.96418716.png',
+        release: '2022-10-04',
+        price: 2499,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "كاميرا 200 ميجابكسل",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 120 واط",
+          "معالج Snapdragon 8+ Gen 1",
+          "مقاومة الماء والغبار IP53"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8+ Gen 1',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '200MP + 8MP + 2MP',
+          os: 'Android 12 مع MIUI 13',
+          weight: '202 جرام',
+          waterResistance: 'IP53',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أزرق، فضي'
+        }
+      },
+      {
+        id: 'xiaomi11t',
+        brand: 'Xiaomi',
+        model: 'Xiaomi 11T Pro',
+        imageText: 'X11TP',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1630577672.51490405.png',
+        release: '2021-09-15',
+        price: 1999,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "شحن سريع 120 واط",
+          "شاشة AMOLED 120Hz",
+          "معالج Snapdragon 888",
+          "كاميرا 108 ميجابكسل",
+          "مقاومة الماء والغبار IP53"
+        ],
+        specs: {
+          cpu: 'Snapdragon 888',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '108MP + 8MP + 5MP',
+          os: 'Android 11 مع MIUI 12.5',
+          weight: '204 جرام',
+          waterResistance: 'IP53',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أزرق، فضي'
+        }
+      },
+      {
+        id: 'redminote12',
+        brand: 'Xiaomi',
+        model: 'Redmi Note 12 Pro+',
+        imageText: 'RN12P',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1671504488.23151484.png',
+        release: '2022-10-27',
+        price: 1499,
+        rating: 4.1,
+        status: 'متوفر',
+        features: [
+          "كاميرا 200 ميجابكسل",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 120 واط",
+          "معالج Dimensity 1080",
+          "مقاومة الماء والغبار IP53"
+        ],
+        specs: {
+          cpu: 'Dimensity 1080',
+          ram: '8 / 12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '200MP + 8MP + 2MP',
+          os: 'Android 12 مع MIUI 13',
+          weight: '208 جرام',
+          waterResistance: 'IP53',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أزرق، أبيض'
+        }
+      },
+      {
+        id: 'poco5p',
+        brand: 'Xiaomi',
+        model: 'POCO X5 Pro',
+        imageText: 'PX5P',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1671504488.23151484.png',
+        release: '2023-02-06',
+        price: 1299,
+        rating: 4.0,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "معالج Snapdragon 778G",
+          "شحن سريع 67 واط",
+          "كاميرا 108 ميجابكسل",
+          "تصميم شاب"
+        ],
+        specs: {
+          cpu: 'Snapdragon 778G',
+          ram: '6 / 8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '108MP + 8MP + 2MP',
+          os: 'Android 12 مع MIUI 13',
+          weight: '181 جرام',
+          waterResistance: 'IP53',
+          charging: '67W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أصفر، أزرق'
+        }
+      },
+      {
+        id: 'redmi12',
+        brand: 'Xiaomi',
+        model: 'Redmi 12',
+        imageText: 'R12',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1687859597.27608206.png',
+        release: '2023-06-14',
+        price: 799,
+        rating: 3.8,
+        status: 'متوفر',
+        features: [
+          "شاشة كبيرة 90Hz",
+          "كاميرا 50 ميجابكسل",
+          "بطارية 5000 مللي أمبير",
+          "تصميم زجاجي",
+          "سعر منافس"
+        ],
+        specs: {
+          cpu: 'Helio G88',
+          ram: '4 / 8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.79" IPS LCD 90Hz',
+          cameras: '50MP + 8MP + 2MP',
+          os: 'Android 13 مع MIUI 14',
+          weight: '198.5 جرام',
+          waterResistance: 'IP53',
+          charging: '18W سريع',
+          connectivity: '4G, Wi-Fi 5, Bluetooth 5.3',
+          colors: 'أسود، أزرق، فضي، أخضر'
+        }
+      },
+      {
+        id: 'poco4p',
+        brand: 'Xiaomi',
+        model: 'POCO F4 GT',
+        imageText: 'PF4GT',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1650447888.50681155.png',
+        release: '2022-04-26',
+        price: 2299,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "هاتف ألعاب مع أزرار مادية",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 120 واط",
+          "معالج Snapdragon 8 Gen 1",
+          "نظام تبريد متقدم"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 1',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '4700 مللي أمبير',
+          screen: '6.67" AMOLED 120Hz',
+          cameras: '64MP + 8MP + 2MP',
+          os: 'Android 12 مع MIUI 13',
+          weight: '210 جرام',
+          waterResistance: 'IP53',
+          charging: '120W سريع',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.2',
+          colors: 'أسود، أصفر، أزرق'
+        }
+      },
+      {
+        id: 'redmi10',
+        brand: 'Xiaomi',
+        model: 'Redmi 10',
+        imageText: 'R10',
+        imageUrl: 'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1630577672.51490405.png',
+        release: '2021-08-19',
+        price: 699,
+        rating: 3.9,
+        status: 'متوفر',
+        features: [
+          "شاشة 90Hz",
+          "كاميرا رباعية 50 ميجابكسل",
+          "بطارية 5000 مللي أمبير",
+          "شحن سريع 18 واط",
+          "معالج Helio G88"
+        ],
+        specs: {
+          cpu: 'Helio G88',
+          ram: '4 / 6 جيجابايت',
+          storage: '64 / 128 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.5" IPS LCD 90Hz',
+          cameras: '50MP + 8MP + 2MP + 2MP',
+          os: 'Android 11 مع MIUI 12.5',
+          weight: '181 جرام',
+          waterResistance: 'IP53',
+          charging: '18W سريع',
+          connectivity: '4G, Wi-Fi 5, Bluetooth 5.1',
+          colors: 'أسود، أزرق، فضي'
+        }
+      },
+
+      // =============== ماركات أخرى ===============
+      // جوجل (Google)
+      {
+        id: 'pixel9p',
+        brand: 'Google',
+        model: 'Pixel 9 Pro',
+        imageText: 'P9P',
+        imageUrl: 'https://lh3.googleusercontent.com/drive-viewer/AKGpihalnxbhbD9FYZwIlNRmJug6pxnyEJCkP6B27sVX06fHZJ5awpQy1Cy6XStEKLcP_6SFu-u1gs8Hv4VJ9vWdb6qPNhO4eA=s1600',
+        release: '2024-10-09',
+        price: 3999,
+        rating: 4.6,
+        status: 'متوفر',
+        features: [
+          "معالج Tensor G4",
+          "كاميرا رئيسية 50 ميجابكسل",
+          "كاميرا تليفوتوغرافية 5x",
+          "دعم الذكاء الاصطناعي المتقدم",
+          "7 سنوات تحديثات نظام"
+        ],
+        specs: {
+          cpu: 'Google Tensor G4',
+          ram: '12 جيجابايت',
+          storage: '128 / 256 / 512 جيجابايت',
+          battery: '5050 مللي أمبير',
+          screen: '6.7" OLED 120Hz',
+          cameras: '50MP + 48MP + 48MP',
+          os: 'Android 15',
+          weight: '213 جرام',
+          waterResistance: 'IP68',
+          charging: '30W سريع + 23W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.3',
+          colors: 'بورسلين، خزفي، زمردي، أسود'
+        }
+      },
+      {
+        id: 'pixel9',
+        brand: 'Google',
+        model: 'Pixel 9',
+        imageText: 'P9',
+        imageUrl: 'https://lh3.googleusercontent.com/drive-viewer/AKGpihalnxbhbD9FYZwIlNRmJug6pxnyEJCkP6B27sVX06fHZJ5awpQy1Cy6XStEKLcP_6SFu-u1gs8Hv4VJ9vWdb6qPNhO4eA=s1600',
+        release: '2024-10-09',
+        price: 3299,
+        rating: 4.4,
+        status: 'متوفر',
+        features: [
+          "معالج Tensor G4",
+          "كاميرا رئيسية 50 ميجابكسل",
+          "دعم الذكاء الاصطناعي",
+          "7 سنوات تحديثات",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Google Tensor G4',
+          ram: '8 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '4575 مللي أمبير',
+          screen: '6.2" OLED 120Hz',
+          cameras: '50MP + 12MP',
+          os: 'Android 15',
+          weight: '188 جرام',
+          waterResistance: 'IP68',
+          charging: '30W سريع + 18W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.3',
+          colors: 'بورسلين، خزفي، زمردي، أسود'
+        }
+      },
+
+      // ون بلس (OnePlus)
+      {
+        id: 'oneplus12',
+        brand: 'OnePlus',
+        model: 'OnePlus 12',
+        imageText: 'OP12',
+        imageUrl: 'https://image01.oneplus.net/ebp/202311/27/1-m00-34-2c-cpgm7wwnywsag8fuaa4sjizh4ee945.png',
+        release: '2024-01-23',
+        price: 3499,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz LTPO",
+          "كاميرا هاسلبلاد 50 ميجابكسل",
+          "شحن سريع 100 واط",
+          "شحن لاسلكي 50 واط",
+          "مقاومة الماء والغبار IP65"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5400 مللي أمبير',
+          screen: '6.82" AMOLED LTPO 120Hz',
+          cameras: '50MP + 48MP + 64MP',
+          os: 'Android 14 مع OxygenOS 14',
+          weight: '220 جرام',
+          waterResistance: 'IP65',
+          charging: '100W سريع + 50W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أخضر، أسود، رمادي'
+        }
+      },
+      {
+        id: 'oneplusnord4',
+        brand: 'OnePlus',
+        model: 'OnePlus Nord 4',
+        imageText: 'OPN4',
+        imageUrl: 'https://image01.oneplus.net/ebp/202311/27/1-m00-34-2c-cpgm7wwnywsag8fuaa4sjizh4ee945.png',
+        release: '2024-07-01',
+        price: 1799,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 100 واط",
+          "تصميم معدني بالكامل",
+          "كاميرا 50 ميجابكسل",
+          "مقاومة الماء والغبار IP65"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7+ Gen 3',
+          ram: '8 / 12 جيجابايت',
+          storage: '128 / 256 جيجابايت',
+          battery: '5500 مللي أمبير',
+          screen: '6.74" AMOLED 120Hz',
+          cameras: '50MP + 8MP',
+          os: 'Android 14 مع OxygenOS 14',
+          weight: '190 جرام',
+          waterResistance: 'IP65',
+          charging: '100W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'رمادي معدني، أخضر معدني'
+        }
+      },
+
+      // هواوي (Huawei)
+      {
+        id: 'huaweip70',
+        brand: 'Huawei',
+        model: 'Huawei P70 Pro',
+        imageText: 'P70P',
+        imageUrl: 'https://consumer-img.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/p70-pro/p70-pro-black.png',
+        release: '2024-04-18',
+        price: 4299,
+        rating: 4.6,
+        status: 'متوفر',
+        features: [
+          "كاميرا XMAGE مع عدسة متغيرة الفتحة",
+          "شاشة OLED 120Hz LTPO",
+          "شحن سريع 100 واط",
+          "شحن لاسلكي 50 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Kirin 9010',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.8" OLED LTPO 120Hz',
+          cameras: '50MP + 50MP + 50MP',
+          os: 'HarmonyOS 4.2',
+          weight: '205 جرام',
+          waterResistance: 'IP68',
+          charging: '100W سريع + 50W لاسلكي',
+          connectivity: '4G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أبيض، أخضر، أرجواني'
+        }
+      },
+      {
+        id: 'huaweimate60',
+        brand: 'Huawei',
+        model: 'Huawei Mate 60 Pro+',
+        imageText: 'M60P',
+        imageUrl: 'https://consumer-img.huawei.com/content/dam/huawei-cbg-site/common/mkt/pdp/phones/mate60-pro-plus/mate60-pro-plus-black.png',
+        release: '2023-09-25',
+        price: 5999,
+        rating: 4.7,
+        status: 'متوفر',
+        features: [
+          "كاميرا XMAGE رباعية",
+          "شاشة OLED 120Hz LTPO",
+          "مقاومة الماء والغبار IP68",
+          "دعم الاتصال عبر الأقمار الصناعية",
+          "شحن سريع 88 واط"
+        ],
+        specs: {
+          cpu: 'Kirin 9000S',
+          ram: '16 جيجابايت',
+          storage: '512 جيجابايت / 1 تيرابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.82" OLED LTPO 120Hz',
+          cameras: '48MP + 48MP + 48MP + 40MP',
+          os: 'HarmonyOS 4.0',
+          weight: '225 جرام',
+          waterResistance: 'IP68',
+          charging: '88W سريع + 50W لاسلكي',
+          connectivity: '4G, Wi-Fi 6, Bluetooth 5.2',
+          colors: 'أسود، أبيض، أرجواني'
+        }
+      },
+
+      // ريلمي (Realme)
+      {
+        id: 'realme12p',
+        brand: 'Realme',
+        model: 'Realme 12 Pro+',
+        imageText: 'R12P',
+        imageUrl: 'https://image01.realme.net/general/20240115/1705297033666.png',
+        release: '2024-01-29',
+        price: 1699,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "كاميرا 64 ميجابكسل مع زوم بيريسكوب 3x",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 67 واط",
+          "تصميم بالتعاون مع أوليفييه لابوتان",
+          "معالج Snapdragon 7s Gen 2"
+        ],
+        specs: {
+          cpu: 'Snapdragon 7s Gen 2',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.7" AMOLED 120Hz',
+          cameras: '50MP + 64MP + 8MP',
+          os: 'Android 14 مع Realme UI 5.0',
+          weight: '196 جرام',
+          waterResistance: 'IP65',
+          charging: '67W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أزرق، أسود، أبيض'
+        }
+      },
+
+      // أوبو (Oppo)
+      {
+        id: 'oppofindx7',
+        brand: 'Oppo',
+        model: 'Oppo Find X7 Ultra',
+        imageText: 'OFX7U',
+        imageUrl: 'https://image.oppo.com/content/dam/oppo/common/mkt/smartphone/find-x7-ultra/find-x7-ultra-black.png',
+        release: '2024-01-08',
+        price: 4599,
+        rating: 4.6,
+        status: 'متوفر',
+        features: [
+          "كاميرا رباعية هاسلبلاد",
+          "شاشة AMOLED 120Hz LTPO",
+          "شحن سريع 100 واط",
+          "شحن لاسلكي 50 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.82" AMOLED LTPO 120Hz',
+          cameras: '50MP + 50MP + 50MP + 50MP',
+          os: 'Android 14 مع ColorOS 14',
+          weight: '221 جرام',
+          waterResistance: 'IP68',
+          charging: '100W سريع + 50W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، أخضر، بني'
+        }
+      },
+      {
+        id: 'opporeno11',
+        brand: 'Oppo',
+        model: 'Oppo Reno 11 Pro',
+        imageText: 'OR11P',
+        imageUrl: 'https://image.oppo.com/content/dam/oppo/common/mkt/smartphone/reno11-pro/reno11-pro-black.png',
+        release: '2024-01-12',
+        price: 2499,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "كاميرا 50 ميجابكسل مع عدسة بورتريه",
+          "شاشة AMOLED 120Hz",
+          "شحن سريع 80 واط",
+          "تصميم نحيف 7.6 مم",
+          "مقاومة الماء والغبار IP65"
+        ],
+        specs: {
+          cpu: 'MediaTek Dimensity 9200',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '4600 مللي أمبير',
+          screen: '6.7" AMOLED 120Hz',
+          cameras: '50MP + 32MP + 8MP',
+          os: 'Android 14 مع ColorOS 14',
+          weight: '181 جرام',
+          waterResistance: 'IP65',
+          charging: '80W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أخضر، وردي'
+        }
+      },
+
+      // فيفو (Vivo)
+      {
+        id: 'vivox100',
+        brand: 'Vivo',
+        model: 'Vivo X100 Pro',
+        imageText: 'VX100P',
+        imageUrl: 'https://www.vivo.com/content/dam/vivo-site/global/products/x100-pro/x100-pro-black.png',
+        release: '2023-11-13',
+        price: 3999,
+        rating: 4.5,
+        status: 'متوفر',
+        features: [
+          "تعاون Zeiss للكاميرات",
+          "كاميرا بيريسكوب 4.3x",
+          "شاشة AMOLED 120Hz LTPO",
+          "شحن سريع 120 واط",
+          "معالج Dimensity 9300"
+        ],
+        specs: {
+          cpu: 'Dimensity 9300',
+          ram: '12 / 16 جيجابايت',
+          storage: '256 / 512 جيجابايت / 1 تيرابايت',
+          battery: '5400 مللي أمبير',
+          screen: '6.78" AMOLED LTPO 120Hz',
+          cameras: '50MP Zeiss + 50MP + 50MP',
+          os: 'Android 14 مع OriginOS 4',
+          weight: '225 جرام',
+          waterResistance: 'IP68',
+          charging: '120W سريع + 50W لاسلكي',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.4',
+          colors: 'أسود، أزرق، أحمر'
+        }
+      },
+      {
+        id: 'vivov30',
+        brand: 'Vivo',
+        model: 'Vivo V30 Pro',
+        imageText: 'VV30P',
+        imageUrl: 'https://www.vivo.com/content/dam/vivo-site/global/products/v30-pro/v30-pro-black.png',
+        release: '2024-02-22',
+        price: 2299,
+        rating: 4.2,
+        status: 'متوفر',
+        features: [
+          "كاميرا 50 ميجابكسل مع فلاش LED مزدوج",
+          "شاشة AMOLED 120Hz",
+          "تصميم نحيف 7.5 مم",
+          "شحن سريع 80 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'MediaTek Dimensity 9200+',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '5000 مللي أمبير',
+          screen: '6.78" AMOLED 120Hz',
+          cameras: '50MP + 50MP + 12MP',
+          os: 'Android 14 مع Funtouch OS 14',
+          weight: '186 جرام',
+          waterResistance: 'IP68',
+          charging: '80W سريع',
+          connectivity: '5G, Wi-Fi 6, Bluetooth 5.3',
+          colors: 'أسود، أخضر، أزرق، وردي'
+        }
+      },
+
+      // نوكيا (Nokia)
+      {
+        id: 'nokiag60',
+        brand: 'Nokia',
+        model: 'Nokia G60 5G',
+        imageText: 'NG60',
+        imageUrl: 'https://www.nokia.com/phones/sites/default/files/styles/carousel/public/2022-08/Nokia-G60-5G-front.png',
+        release: '2022-09-01',
+        price: 1199,
+        rating: 3.9,
+        status: 'متوفر',
+        features: [
+          "هاتف مستدام (100% بلاستيك معاد تدويره)",
+          "3 سنوات تحديثات نظام",
+          "4 سنوات تحديثات أمنية",
+          "كاميرا ثلاثية 50 ميجابكسل",
+          "مقاومة الماء والغبار IP52"
+        ],
+        specs: {
+          cpu: 'Snapdragon 695',
+          ram: '6 جيجابايت',
+          storage: '128 جيجابايت',
+          battery: '4500 مللي أمبير',
+          screen: '6.58" IPS LCD 120Hz',
+          cameras: '50MP + 5MP + 2MP',
+          os: 'Android 12 (قابل للترقية إلى Android 14)',
+          weight: '190 جرام',
+          waterResistance: 'IP52',
+          charging: '20W سريع',
+          connectivity: '5G, Wi-Fi 5, Bluetooth 5.1',
+          colors: 'أسود، رمادي'
+        }
+      },
+
+      // موتورولا (Motorola)
+      {
+        id: 'motorolaedge40',
+        brand: 'Motorola',
+        model: 'Motorola Edge 40 Pro',
+        imageText: 'ME40P',
+        imageUrl: 'https://www.motorola.com/sites/default/files/styles/product_image/public/motorola-edge-40-pro-rendered-image-1.png',
+        release: '2023-05-23',
+        price: 2999,
+        rating: 4.3,
+        status: 'متوفر',
+        features: [
+          "شاشة OLED 165Hz",
+          "كاميرا 50 ميجابكسل مع OIS",
+          "شحن سريع 125 واط",
+          "شحن لاسلكي 15 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 2',
+          ram: '12 جيجابايت',
+          storage: '256 / 512 جيجابايت',
+          battery: '4600 مللي أمبير',
+          screen: '6.67" OLED 165Hz',
+          cameras: '50MP + 50MP + 12MP',
+          os: 'Android 13 (قابل للترقية)',
+          weight: '199 جرام',
+          waterResistance: 'IP68',
+          charging: '125W سريع + 15W لاسلكي',
+          connectivity: '5G, Wi-Fi 6E, Bluetooth 5.3',
+          colors: 'أسود، أزرق، أبيض'
+        }
+      },
+
+      // ASUS
+      {
+        id: 'rogphone8',
+        brand: 'ASUS',
+        model: 'ROG Phone 8 Pro',
+        imageText: 'ROG8',
+        imageUrl: 'https://dlcdnrog.asus.com/rog/media/1640488462627.png',
+        release: '2024-01-16',
+        price: 4999,
+        rating: 4.5,
+        status: 'متوفر',
+        features: [
+          "شاشة AMOLED 165Hz",
+          "معالج Snapdragon 8 Gen 3 مفرط التردد",
+          "نظام تبريد AirTrigger 6",
+          "شحن سريع 65 واط",
+          "مقاومة الماء والغبار IP68"
+        ],
+        specs: {
+          cpu: 'Snapdragon 8 Gen 3 (مفرط التردد)',
+          ram: '16 / 24 جيجابايت',
+          storage: '512 جيجابايت / 1 تيرابايت',
+          battery: '5500 مللي أمبير',
+          screen: '6.78" AMOLED 165Hz',
+          cameras: '50MP + 13MP + 8MP',
+          os: 'Android 14 مع ROG UI',
+          weight: '225 جرام',
+          waterResistance: 'IP68',
+          charging: '65W سريع',
+          connectivity: '5G, Wi-Fi 7, Bluetooth 5.3',
+          colors: 'أسود، رمادي'
+        }
+      }
+    ];
+
+    // DOM refs
+    const listEl = document.getElementById('list');
+    const detailsContent = document.getElementById('detailsContent');
+    const modal = document.getElementById('modal');
+    const compareModal = document.getElementById('compareModal');
+    const modalBody = document.getElementById('modalBody');
+    const compareModalBody = document.getElementById('compareModalBody');
+    const modalTitle = document.getElementById('modalTitle');
+    const totalPhonesEl = document.getElementById('totalPhones');
+    const brandsCountEl = document.getElementById('brandsCount');
+    const avgPriceEl = document.getElementById('avgPrice');
+    const newestPhoneEl = document.getElementById('newestPhone');
+    const compareItemsEl = document.getElementById('compareItems');
+    const compareSection = document.getElementById('compareSection');
+
+    // Variables
+    let selectedPhoneId = null;
+    let comparedPhones = [];
+    const MAX_COMPARE = 3;
+
+    // Helpers
+    function formatDate(iso){
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleDateString('ar-EG', { year:'numeric', month:'short', day:'numeric' });
+    }
+
+    function formatPrice(price){
+      return new Intl.NumberFormat('ar-EG', { style: 'currency', currency: 'SAR' }).format(price);
+    }
+
+    function renderStars(rating){
+      let stars = '';
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      
+      for(let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
+      if(hasHalfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+      for(let i = 0; i < emptyStars; i++) stars += '<i class="far fa-star"></i>';
+      
+      return stars;
+    }
+
+    // render phone card
+    function renderCard(phone){
+      const div = document.createElement('div');
+      div.className = 'phone-card';
+      if (comparedPhones.includes(phone.id)) {
+        div.classList.add('compared');
+      }
+      div.dataset.id = phone.id;
+
+      const showImages = document.getElementById('imageToggle').checked;
+      const imageContent = showImages && phone.imageUrl 
+        ? `<img src="${phone.imageUrl}" alt="${phone.brand} ${phone.model}" onerror="this.onerror=null; this.parentElement.innerHTML='${escapeHtml(phone.imageText)}'">`
+        : escapeHtml(phone.imageText);
+
+      const compareBadge = comparedPhones.includes(phone.id) 
+        ? `<div class="compare-badge">${comparedPhones.indexOf(phone.id) + 1}</div>`
+        : '';
+
+      div.innerHTML = `
+        ${compareBadge}
+        <div class="card-header">
+          <div class="thumb">${imageContent}</div>
+          <div class="card-info">
+            <h3>${escapeHtml(phone.model)} <span class="brand-badge">${escapeHtml(phone.brand)}</span></h3>
+            <p><i class="far fa-calendar-alt"></i> ${formatDate(phone.release)}</p>
+            <div class="rating">
+              <span class="rating-value">${phone.rating}</span>
+              ${renderStars(phone.rating)}
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-features">
+          ${phone.features.slice(0, 3).map(f => `
+            <div class="feature-tag">
+              <i class="fas fa-check-circle"></i> ${escapeHtml(f)}
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="card-footer">
+          <div class="price">${formatPrice(phone.price)}</div>
+          <button class="btn-secondary add-to-compare-btn" style="padding:8px 16px; font-size:13px;" data-id="${phone.id}">
+            <i class="fas fa-balance-scale"></i> ${comparedPhones.includes(phone.id) ? 'مضاف' : 'مقارنة'}
+          </button>
+        </div>
+      `;
+      
+      div.addEventListener('click', (e) => {
+        if (!e.target.closest('.add-to-compare-btn')) {
+          showDetails(phone.id);
+        }
+      });
+      
+      div.querySelector('.add-to-compare-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleCompare(phone.id);
+      });
+      
+      return div;
+    }
+
+    // escape helper
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, function(m){ 
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; 
+      });
+    }
+
+    // show in panel + open modal for small screens
+    function showDetails(id){
+      selectedPhoneId = id;
+      const phone = phones.find(p=>p.id===id);
+      if(!phone) return;
+      const s = phone.specs;
+      
+      const showImages = document.getElementById('imageToggle').checked;
+      const imageContent = showImages && phone.imageUrl 
+        ? `<img src="${phone.imageUrl}" alt="${phone.brand} ${phone.model}" onerror="this.onerror=null; this.parentElement.innerHTML='${escapeHtml(phone.imageText)}'">`
+        : `<div style="font-size:24px; font-weight:bold;">${escapeHtml(phone.imageText)}</div>`;
+      
+      detailsContent.innerHTML = `
+        <div class="details-header">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>${escapeHtml(phone.brand)} ${escapeHtml(phone.model)}</h2>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="rating">
+                ${renderStars(phone.rating)}
+              </div>
+              <div class="price" style="font-size:20px;">${formatPrice(phone.price)}</div>
+            </div>
+          </div>
+          <div class="details-thumb">
+            ${imageContent}
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div class="chip" style="background:rgba(61,220,132,0.1); color:var(--accent);">
+              <i class="far fa-calendar"></i> ${formatDate(phone.release)}
+            </div>
+            <div class="chip"><i class="fas fa-weight-hanging"></i> ${escapeHtml(s.weight)}</div>
+            <div class="chip"><i class="fab fa-android"></i> ${escapeHtml(s.os)}</div>
+            <div class="chip" style="background:${phone.status === 'متوفر' ? 'rgba(61,220,132,0.1)' : 'rgba(255,107,107,0.1)'}; color:${phone.status === 'متوفر' ? '#3ddc84' : '#ff6b6b'}">
+              <i class="fas fa-circle"></i> ${phone.status}
+            </div>
+          </div>
+        </div>
+
+        <div class="specs">
+          <div class="spec"><b><i class="fas fa-microchip"></i> المعالج</b><span>${escapeHtml(s.cpu)}</span></div>
+          <div class="spec"><b><i class="fas fa-memory"></i> الذاكرة</b><span>${escapeHtml(s.ram)}</span></div>
+          <div class="spec"><b><i class="fas fa-hdd"></i> التخزين</b><span>${escapeHtml(s.storage)}</span></div>
+          <div class="spec"><b><i class="fas fa-battery-full"></i> البطارية</b><span>${escapeHtml(s.battery)}</span></div>
+          <div class="spec"><b><i class="fas fa-bolt"></i> الشحن</b><span>${escapeHtml(s.charging)}</span></div>
+          <div class="spec"><b><i class="fas fa-tv"></i> الشاشة</b><span>${escapeHtml(s.screen)}</span></div>
+          <div class="spec"><b><i class="fas fa-camera"></i> الكاميرات</b><span>${escapeHtml(s.cameras)}</span></div>
+          <div class="spec"><b><i class="fas fa-wifi"></i> الاتصال</b><span>${escapeHtml(s.connectivity)}</span></div>
+        </div>
+        
+        <div class="highlight-features">
+          <h3><i class="fas fa-star"></i> المميزات البارزة</h3>
+          <ul>
+            ${phone.features.slice(0, 5).map(f => `
+              <li><i class="fas fa-check"></i> ${escapeHtml(f)}</li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+
+      // Update modal
+      modalTitle.textContent = `${phone.brand} ${phone.model}`;
+      
+      const modalImageContent = showImages && phone.imageUrl 
+        ? `<img src="${phone.imageUrl}" alt="${phone.brand} ${phone.model}" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\'font-size:32px; font-weight:bold;\'>${escapeHtml(phone.imageText)}</div>'">`
+        : `<div style="font-size:32px; font-weight:bold;">${escapeHtml(phone.imageText)}</div>`;
+      
+      modalBody.innerHTML = `
+        <div class="modal-thumb">
+          ${modalImageContent}
+        </div>
+        <div>
+          <div class="modal-specs">
+            <div class="spec"><b><i class="fas fa-microchip"></i> المعالج</b><span>${escapeHtml(s.cpu)}</span></div>
+            <div class="spec"><b><i class="fas fa-memory"></i> الذاكرة</b><span>${escapeHtml(s.ram)}</span></div>
+            <div class="spec"><b><i class="fas fa-hdd"></i> التخزين</b><span>${escapeHtml(s.storage)}</span></div>
+            <div class="spec"><b><i class="fas fa-battery-full"></i> البطارية</b><span>${escapeHtml(s.battery)}</span></div>
+            <div class="spec"><b><i class="fas fa-tv"></i> الشاشة</b><span>${escapeHtml(s.screen)}</span></div>
+            <div class="spec"><b><i class="fas fa-camera"></i> الكاميرات</b><span>${escapeHtml(s.cameras)}</span></div>
+            <div class="spec"><b><i class="fas fa-weight-hanging"></i> الوزن</b><span>${escapeHtml(s.weight)}</span></div>
+            <div class="spec"><b><i class="fas fa-shield-alt"></i> المقاومة</b><span>${escapeHtml(s.waterResistance || 'غير متوفر')}</span></div>
+            <div class="spec"><b><i class="fas fa-palette"></i> الألوان</b><span>${escapeHtml(s.colors || 'متعدد')}</span></div>
+            <div class="spec"><b><i class="fas fa-satellite-dish"></i> الشبكات</b><span>${escapeHtml(s.connectivity)}</span></div>
+          </div>
+          
+          <div class="modal-features">
+            <h3><i class="fas fa-bolt"></i> جميع المميزات (${phone.features.length})</h3>
+            <div class="features-grid">
+              ${phone.features.map(f => `
+                <div class="feature-item">
+                  <div class="feature-icon">
+                    <i class="fas fa-check"></i>
+                  </div>
+                  <div class="feature-text">
+                    <h4>${escapeHtml(f)}</h4>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Update compare button text
+      const compareBtn = document.getElementById('addToCompareBtn');
+      compareBtn.innerHTML = comparedPhones.includes(phone.id) 
+        ? '<i class="fas fa-times"></i> إزالة من المقارنة'
+        : '<i class="fas fa-balance-scale"></i> إضافة للمقارنة';
+      
+      // show modal on small screens
+      if (window.innerWidth < 1100) {
+        modal.style.display = 'flex';
+      }
+    }
+
+    // toggle phone for comparison
+    function toggleCompare(id){
+      const index = comparedPhones.indexOf(id);
+      
+      if (index > -1) {
+        // Remove from comparison
+        comparedPhones.splice(index, 1);
+      } else {
+        // Add to comparison
+        if (comparedPhones.length >= MAX_COMPARE) {
+          alert(`يمكنك مقارنة ${MAX_COMPARE} هواتف كحد أقصى. الرجاء إزالة هاتف أولاً.`);
+          return;
+        }
+        comparedPhones.push(id);
+      }
+      
+      updateCompareSection();
+      renderList(filteredPhones);
+      
+      // Update current phone card if it's the selected one
+      if (selectedPhoneId === id) {
+        showDetails(id);
+      }
+    }
+
+    // update compare section
+    function updateCompareSection(){
+      if (comparedPhones.length === 0) {
+        compareItemsEl.innerHTML = `
+          <div class="placeholder" style="padding:20px; width:100%;">
+            <i class="fas fa-balance-scale"></i>
+            <div>لم يتم اختيار أي هواتف للمقارنة بعد</div>
+            <div style="font-size:13px; margin-top:8px;">انقر على زر "مقارنة" في أي هاتف</div>
+          </div>
+        `;
+      } else {
+        compareItemsEl.innerHTML = '';
+        comparedPhones.forEach((id, index) => {
+          const phone = phones.find(p => p.id === id);
+          if (!phone) return;
+          
+          const item = document.createElement('div');
+          item.className = 'compare-item selected';
+          item.innerHTML = `
+            <div class="compare-item-header">
+              <div class="compare-item-thumb">${phone.imageText}</div>
+              <div>
+                <div class="compare-item-name">${escapeHtml(phone.brand)} ${escapeHtml(phone.model)}</div>
+                <div class="compare-item-price">${formatPrice(phone.price)}</div>
+              </div>
+              <button class="close-modal" style="font-size:16px; margin-right:auto;" data-id="${phone.id}">✕</button>
+            </div>
+            <div style="font-size:12px; color:var(--muted);">${phone.specs.cpu.split(' ')[0]}</div>
+            <div style="font-size:12px; color:var(--muted); margin-top:4px;">${phone.specs.ram.split(' ')[0]}</div>
+          `;
+          
+          item.querySelector('button').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleCompare(phone.id);
+          });
+          
+          compareItemsEl.appendChild(item);
+        });
+      }
+    }
+
+    // run comparison
+    function runComparison(){
+      if (comparedPhones.length < 2) {
+        alert('الرجاء اختيار هاتفين على الأقل للمقارنة');
+        return;
+      }
+      
+      const comparePhones = comparedPhones.map(id => phones.find(p => p.id === id));
+      
+      let comparisonHTML = `
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr>
+                <th style="padding:12px; text-align:right; background:rgba(255,255,255,0.05); border-bottom:2px solid var(--accent);">المواصفات</th>
+                ${comparePhones.map(phone => `
+                  <th style="padding:12px; text-align:center; background:rgba(255,255,255,0.05); border-bottom:2px solid var(--accent);">
+                    <div style="font-weight:bold; font-size:16px;">${escapeHtml(phone.brand)} ${escapeHtml(phone.model)}</div>
+                    <div style="font-size:14px; color:var(--accent); margin-top:4px;">${formatPrice(phone.price)}</div>
+                  </th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      
+      // Add specifications rows
+      const specKeys = ['cpu', 'ram', 'storage', 'battery', 'screen', 'cameras', 'os', 'weight', 'waterResistance', 'charging', 'connectivity'];
+      const specLabels = {
+        cpu: 'المعالج',
+        ram: 'الذاكرة',
+        storage: 'التخزين',
+        battery: 'البطارية',
+        screen: 'الشاشة',
+        cameras: 'الكاميرات',
+        os: 'نظام التشغيل',
+        weight: 'الوزن',
+        waterResistance: 'مقاومة الماء',
+        charging: 'الشحن',
+        connectivity: 'الاتصال'
+      };
+      
+      specKeys.forEach(key => {
+        comparisonHTML += `
+          <tr>
+            <td style="padding:12px; text-align:right; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.05);">
+              <b>${specLabels[key]}</b>
+            </td>
+            ${comparePhones.map(phone => `
+              <td style="padding:12px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05);">
+                ${escapeHtml(phone.specs[key] || 'غير متوفر')}
+              </td>
+            `).join('')}
+          </tr>
+        `;
+      });
+      
+      // Add features comparison
+      comparisonHTML += `
+          <tr>
+            <td colspan="${comparePhones.length + 1}" style="padding:20px 12px 12px; text-align:right; font-size:18px; color:var(--accent);">
+              <i class="fas fa-star"></i> المميزات الرئيسية
+            </td>
+          </tr>
+      `;
+      
+      // Get max features count
+      const maxFeatures = Math.max(...comparePhones.map(p => p.features.length));
+      
+      for(let i = 0; i < maxFeatures; i++) {
+        comparisonHTML += `
+          <tr>
+            <td style="padding:8px 12px; text-align:right; background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.05);">
+              ${i + 1}
+            </td>
+            ${comparePhones.map(phone => `
+              <td style="padding:8px 12px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.05);">
+                ${phone.features[i] ? `<span style="font-size:13px;">${escapeHtml(phone.features[i])}</span>` : '-'}
+              </td>
+            `).join('')}
+          </tr>
+        `;
+      }
+      
+      comparisonHTML += `
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      compareModalBody.innerHTML = comparisonHTML;
+      compareModal.style.display = 'flex';
+    }
+
+    // update statistics
+    function updateStats(data){
+      totalPhonesEl.textContent = data.length;
+      
+      if(data.length > 0){
+        // Count unique brands
+        const uniqueBrands = [...new Set(data.map(phone => phone.brand))];
+        brandsCountEl.textContent = uniqueBrands.length;
+        
+        // Calculate average price
+        const totalPrice = data.reduce((sum, phone) => sum + phone.price, 0);
+        avgPriceEl.textContent = formatPrice(Math.round(totalPrice / data.length));
+        
+        // Find newest phone year
+        const newestYear = Math.max(...data.map(p => new Date(p.release).getFullYear()));
+        newestPhoneEl.textContent = newestYear;
+      } else {
+        brandsCountEl.textContent = '0';
+        avgPriceEl.textContent = formatPrice(0);
+        newestPhoneEl.textContent = '2025';
+      }
+    }
+
+    let filteredPhones = [...phones];
+
+    // initial render list
+    function renderList(data){
+      filteredPhones = data;
+      listEl.innerHTML = '';
+      if(!data.length){
+        listEl.innerHTML = `
+          <div class="placeholder" style="grid-column:1/-1">
+            <i class="fas fa-search"></i>
+            <div>لا توجد هواتف تطابق البحث</div>
+            <div style="font-size:13px; margin-top:8px;">جرب تغيير كلمات البحث أو إزالة الفلاتر</div>
+          </div>
+        `;
+        return;
+      }
+      data.forEach(p => listEl.appendChild(renderCard(p)));
+      updateStats(data);
+    }
+
+    // populate brand filter
+    function populateBrands(){
+      const sel = document.getElementById('filterBrand');
+      const brands = Array.from(new Set(phones.map(p=>p.brand))).sort();
+      brands.forEach(b=>{
+        const opt = document.createElement('option');
+        opt.value = b; opt.textContent = b;
+        sel.appendChild(opt);
+      });
+    }
+
+    // search & filter logic
+    function applyFilters(){
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const brand = document.getElementById('filterBrand').value;
+      const priceRange = document.getElementById('filterPrice').value;
+      const sort = document.getElementById('sort').value;
+
+      let results = phones.filter(p=>{
+        // Filter by brand
+        if(brand && p.brand !== brand) return false;
+        
+        // Filter by price range
+        if(priceRange === 'budget' && p.price >= 1500) return false;
+        if(priceRange === 'mid' && (p.price < 1500 || p.price > 3000)) return false;
+        if(priceRange === 'flagship' && p.price <= 3000) return false;
+        
+        // Filter by search query
+        if(!q) return true;
+        const searchText = (p.brand + ' ' + p.model + ' ' + p.specs.cpu + ' ' + p.features.join(' ')).toLowerCase();
+        return searchText.includes(q);
+      });
+
+      // Sorting
+      if(sort === 'name'){
+        results.sort((a,b)=> a.model.localeCompare(b.model, 'ar'));
+      } else if(sort === 'price-low'){
+        results.sort((a,b)=> a.price - b.price);
+      } else if(sort === 'price-high'){
+        results.sort((a,b)=> b.price - a.price);
+      } else {
+        // relevance: by release date desc
+        results.sort((a,b)=> new Date(b.release) - new Date(a.release));
+      }
+
+      renderList(results);
+    }
+
+    // toggle theme
+    function toggleTheme(){
+      const body = document.body;
+      const themeToggle = document.getElementById('themeToggle');
+      
+      if(body.classList.contains('light-mode')){
+        body.classList.remove('light-mode');
+        body.classList.add('dark-mode');
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i> الوضع الليلي';
+        localStorage.setItem('theme', 'dark');
+      } else {
+        body.classList.remove('dark-mode');
+        body.classList.add('light-mode');
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i> الوضع النهاري';
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    // init
+    (function init(){
+      populateBrands();
+      renderList(phones);
+      
+      // Load saved theme
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      if(savedTheme === 'light'){
+        document.body.classList.remove('dark-mode');
+        document.body.classList.add('light-mode');
+        document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i> الوضع النهاري';
+      }
+      
+      // Event listeners
+      document.getElementById('search').addEventListener('input', applyFilters);
+      document.getElementById('filterBrand').addEventListener('change', applyFilters);
+      document.getElementById('filterPrice').addEventListener('change', applyFilters);
+      document.getElementById('sort').addEventListener('change', applyFilters);
+      document.getElementById('closeModal').addEventListener('click', ()=> modal.style.display='none');
+      document.getElementById('closeCompareModal').addEventListener('click', ()=> compareModal.style.display='none');
+      document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+      
+      document.getElementById('imageToggle').addEventListener('change', function() {
+        renderList(filteredPhones);
+        if(selectedPhoneId) {
+          showDetails(selectedPhoneId);
+        }
+      });
+      
+      modal.addEventListener('click', (e)=> { 
+        if(e.target === modal) modal.style.display='none'; 
+      });
+      
+      compareModal.addEventListener('click', (e)=> { 
+        if(e.target === compareModal) compareModal.style.display='none'; 
+      });
+      
+      // keyboard escape closes modals
+      document.addEventListener('keydown', (e)=> { 
+        if(e.key === 'Escape') {
+          modal.style.display='none';
+          compareModal.style.display='none';
+        }
+      });
+      
+      // Update stats initially
+      updateStats(phones);
+      
+      // Add sample click for first phone
+      setTimeout(() => {
+        if(phones.length > 0) {
+          selectedPhoneId = phones[0].id;
+          showDetails(phones[0].id);
+        }
+      }, 500);
+      
+      // Quick filter buttons
+      document.querySelectorAll('.quick-filters button').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const brand = this.getAttribute('data-brand');
+          if(brand === 'all') {
+            document.getElementById('filterBrand').value = '';
+            document.getElementById('filterPrice').value = '';
+            document.getElementById('search').value = '';
+          } else {
+            document.getElementById('filterBrand').value = brand;
+          }
+          applyFilters();
+        });
+      });
+      
+      // Modal buttons
+      document.getElementById('addToCompareBtn').addEventListener('click', function() {
+        if(selectedPhoneId) {
+          toggleCompare(selectedPhoneId);
+          modal.style.display='none';
+        }
+      });
+      
+      document.getElementById('shareBtn').addEventListener('click', function() {
+        if(navigator.share && selectedPhoneId) {
+          const phone = phones.find(p => p.id === selectedPhoneId);
+          navigator.share({
+            title: `${phone.brand} ${phone.model}`,
+            text: `تفاصيل ${phone.brand} ${phone.model} من موقع مقيم`,
+            url: window.location.href
+          });
+        } else {
+          alert('شارك الرابط: ' + window.location.href);
+        }
+      });
+      
+      document.getElementById('favoriteBtn').addEventListener('click', function() {
+        const btn = document.getElementById('favoriteBtn');
+        if(btn.innerHTML.includes('far fa-heart')) {
+          btn.innerHTML = '<i class="fas fa-heart"></i> محفوظ';
+          btn.style.color = '#ff4757';
+        } else {
+          btn.innerHTML = '<i class="far fa-heart"></i> حفظ';
+          btn.style.color = '';
+        }
+      });
+      
+      // Compare section buttons
+      document.getElementById('runCompare').addEventListener('click', runComparison);
+      document.getElementById('clearCompare').addEventListener('click', function() {
+        comparedPhones = [];
+        updateCompareSection();
+        renderList(filteredPhones);
+        if(selectedPhoneId) {
+          showDetails(selectedPhoneId);
+        }
+      });
+      
+      // Initialize compare section
+      updateCompareSection();
+    })();
+  </script>
+</body>
+</html>
